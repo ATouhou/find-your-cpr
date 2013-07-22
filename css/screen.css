@@ -1,0 +1,25 @@
+html, body {
+  font-family: 'Roboto', sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
+.cpr-fetch-status .loading-container {
+  text-align: center;
+}
+
+h1#headline {
+  text-align: center;
+}
+
+#page-container {
+  width: 100%;
+  text-align: center;
+}
+
+table#user-info {
+  margin: 0 auto;
+}
