@@ -32,8 +32,12 @@
         </facebook>
 
         <img src="img/loading.gif" ng-hide="facebook.user.name || facebook.status!='connected'">
+        <!-- <img ng-src="{{facebook.user.picture.data.url}}"> -->
 
-        <table id="user-info" ng-show="facebook.user.name">
+        <h4 ng-show="errorMsg">Fejl: {{errorMsg}}</h4>
+
+        {{facebook.user.name}}
+        <table id="user-info" ng-hide="errorMsg" ng-show="facebook.user.name" >
           <tr><td>Navn:</td><td>{{facebook.user.name}}</td></tr>
           <tr><td>Fødselsdag:</td><td>{{facebook.user.birthday}}</td></tr>
           <tr><td>Køn:</td><td>{{facebook.user.gender | translate}}</td></tr>
@@ -50,6 +54,7 @@
               </progress>
               <div class="loading-container"><img src="img/loading.gif" width="20"/></div>
             </td>
+            <td ng-switch-default><div class="loading-container"><img src="img/loading.gif" width="20"/></div></td>
           </tr>
         </table>
       </div>  <!-- end of #page-container  -->

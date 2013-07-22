@@ -36,13 +36,15 @@ projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
           if(data.status === "pending" || data.status === "initiated"){
             $timeout(poll, 2000);
           }
+
+        // error (not logged in, or not verified)
+        }).error(function(data, status, headers, config) {
+          $scope.errorMsg = data.msg;
         });
       })();
 
-
-
       // fetch user info
-      FB.api('/me', function(user){
+      FB.api('/me?fields=name,birthday,gender,verified,picture.height(200)', function(user){
         console.log(user);
         $scope.facebook.user = user;
         $scope.$apply();

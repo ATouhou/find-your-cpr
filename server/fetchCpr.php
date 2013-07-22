@@ -13,14 +13,25 @@
   // not logged in
   if(!$facebook->getUser()){
     http_response_code(401);
-    echo json_encode(array("msg" => "Not logged in"));
+    echo json_encode(array("msg" => "Could not get Facebook user - logged in?"));
     exit();
   }
 
   // get user info
   $user = $facebook->api('me?fields=id,first_name,middle_name,last_name,birthday,gender,verified,posts.fields(id).until(1367366400).limit(1)');
+
+  // user not verified
+  if(!$user["verified"]){
+    http_response_code(401);
+    echo json_encode(array("msg" => "Facebook user not verified."));
+    exit();
+  }
+
+  // get birthday
   $user_birthday = explode('/', $user["birthday"]);
   $dob = $user_birthday[1] . $user_birthday[0] . substr($user_birthday[2], -2);
+
+  // set log file
   $log_file_name = $user["id"] . ".log";
   $log_file_path = "../casper_js/" . $log_file_name;
 
