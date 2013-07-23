@@ -11,8 +11,8 @@ var casper = require('casper').create({
 var cliOptions = casper.cli.options;
 
 var person = {
-    firstName: cliOptions.firstName,
-    lastName: cliOptions.lastName,
+    firstName: decodeURI(cliOptions.firstName),
+    lastName: decodeURI(cliOptions.lastName),
     dob: cliOptions.dob,
     gender: cliOptions.gender,
     lastNames: []
@@ -52,6 +52,7 @@ casper.then(function(){
 	console.log(person.firstName);
 	console.log(person.lastName);
 	console.log(person.dob);
+	//this.exit();
 
   // generate list of cpr numbers
   cprList = generateCpr.init(person.dob, person.gender);
@@ -175,7 +176,14 @@ var checkCpr = function(index){
 			var message = this.fetchText('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary').replace(/(\r\n|\n|\r)/gm,"").trim();
       console.log("wrong: " + cpr);
 			// console.log(colorizer.colorize(cpr, "ERROR") + " - " + message);
-			this.captureSelector('incorrect_' + index + '.png', '.name-address-wrapper');
+			//this.captureSelector('incorrect_' + index + '.png', '.name-address-wrapper');
+    this.capture('incorrect_' + index + '.png', {
+          top: 230,
+                left: 100,
+                      width: 600,
+                            height: 600
+                                });
+
 
 			index++;
 			if(cprList[index] !== undefined){

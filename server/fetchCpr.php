@@ -1,7 +1,8 @@
 <?php
+	putenv("PHANTOMJS_EXECUTABLE=/usr/local/bin/phantomjs");
   header('Content-Type: application/json; charset=utf-8');
-  // header('Content-Type: text/html; charset=utf-8');
-  setlocale(LC_CTYPE, "da_DK.UTF-8");
+  //header('Content-Type: text/html; charset=utf-8');
+  setlocale(LC_CTYPE, "da_DK.utf8");
 
   // facebook SDK
   require 'facebook-php-sdk/src/facebook.php';
@@ -12,7 +13,8 @@
 
   // not logged in
   if(!$facebook->getUser()){
-    http_response_code(401);
+    //http_response_code(401);
+    header("HTTP/1.0 401 Unauthorized");
     echo json_encode(array("msg" => "Could not get Facebook user - logged in?"));
     exit();
   }
@@ -22,7 +24,8 @@
 
   // user not verified
   if(!$user["verified"]){
-    http_response_code(401);
+    //http_response_code(401);
+    header("HTTP/1.0 401 Unauthorized");
     echo json_encode(array("msg" => "Facebook user not verified."));
     exit();
   }
@@ -64,21 +67,23 @@
       echo json_encode(array("numberOfAttempts" => $numberOfAttempts, "status" => "pending"));
     }
 
-
   // start finding CPR
   }else{
-    file_put_contents($log_file_path, "");
+    //file_put_contents($log_file_path, "");
+
+		$middle_name = isset($user["middle_name"]) ? " ". $user["middle_name"] : "";
 
     // build cmd
     $cmd = "cd ../casper_js && LANG=da_DK.utf-8; casperjs Telenor.js " .
-    " --firstName=" . escapeshellarg($user["first_name"] . " " .$user["middle_name"] ) .
-    " --lastName=" . escapeshellarg($user["last_name"]) .
+    " --firstName=" . escapeshellarg(urlencode($user["first_name"] . $middle_name)) .
+    " --lastName=" . escapeshellarg(urlencode($user["last_name"])) .
     " --dob=" . escapeshellarg($dob) .
-    " --gender=" . escapeshellarg($user["gender"]) .
+    " --gender=" . escapeshellarg($user["gender"]) . 
     " >> " . $log_file_name . " &";
 
-    // echo json_encode(array("cmd" => $cmd, "status" => "initiated"));
+    //echo json_encode(array("cmd" => $cmd, "status" => "initiated"));
     echo json_encode(array("status" => "initiated"));
+		//echo $cmd;
 
     exec($cmd);
 
