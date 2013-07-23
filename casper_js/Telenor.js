@@ -11,8 +11,8 @@ var casper = require('casper').create({
 var cliOptions = casper.cli.options;
 
 var person = {
-    firstName: decodeURI(cliOptions.firstName),
-    lastName: decodeURI(cliOptions.lastName),
+    firstName: decodeURI(cliOptions.firstName).replace(/\+/g, " "),
+    lastName: decodeURI(cliOptions.lastName).replace(/\+/g, " "),
     dob: cliOptions.dob,
     gender: cliOptions.gender,
     lastNames: []
@@ -142,15 +142,22 @@ var checkCpr = function(index){
 	var email = Math.random().toString(36).substring(5) + '@gmail.com';
 
 	casper.then(function(){
-		// fill out form
+
+    // wait for CPR field
 		this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbCpr', function(){
-			this.fill('#dotnet', {
-				'_ContactInformation_ContactInformation1$ctl00$ctl00$tbCpr': cpr,
-				'_ContactInformation_ContactInformation1$ctl00$ctl00$tbFirstname': person.firstName,
-				'_ContactInformation_ContactInformation1$ctl00$ctl00$tbLastname': person.lastNames[index],
-				'_ContactInformation_ContactInformation1$ctl00$ctl00$tbPhoneNo': phone,
-				'_ContactInformation_ContactInformation1$ctl00$ctl00$tbEmail': email
-			}, false);
+
+      // wait for email field (last field in form)
+      this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbEmail', function(){
+
+        // fill out form
+        this.fill('#dotnet', {
+          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbCpr': cpr,
+          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbFirstname': person.firstName,
+          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbLastname': person.lastNames[index],
+          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbPhoneNo': phone,
+          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbEmail': email
+        }, false);
+      });
 		});
 	});
 
