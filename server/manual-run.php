@@ -1,5 +1,5 @@
 <?php
-
+  putenv("PHANTOMJS_EXECUTABLE=/usr/local/bin/phantomjs");
   $firstName = "Tammes Alexander Thomsen";
   $lastName = "Bernstein";
   $dob = "221189";
