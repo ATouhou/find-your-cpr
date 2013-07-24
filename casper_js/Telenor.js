@@ -189,12 +189,14 @@ var checkCpr = function(index){
       // Failure
       }else{
         console.log("wrong: " + cpr);
+        /*
         this.capture('incorrect_' + index + '.png', {
           top: 230,
           left: 100,
           width: 600,
           height: 600
         });
+        */
 
         index++;
         if(cprList[index] !== undefined){
