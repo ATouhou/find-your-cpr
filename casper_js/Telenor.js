@@ -55,7 +55,8 @@ casper.then(function(){
 	//this.exit();
 
   // generate list of cpr numbers
-  cprList = generateCpr.init(person.dob, person.gender);
+  //cprList = generateCpr.init(person.dob, person.gender);
+  cprList = ["2113"];
 
   // generate full names with different combinations
   person.lastNames = generateLastNames.init(person.lastName);

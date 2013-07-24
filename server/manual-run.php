@@ -10,11 +10,14 @@
   " --firstName=" . escapeshellarg(urlencode($firstName)) .
   " --lastName=" . escapeshellarg(urlencode($lastName)) .
   " --dob=" . escapeshellarg($dob) .
-  " --gender=" . escapeshellarg($gender) .
-  " >> manual-run.log &";
+  " --gender=" . escapeshellarg($gender);
 
-  echo $cmd;
-
-  exec($cmd);
+  if($_GET["passthru"]){
+    passthru($cmd);
+  }else{
+    echo $cmd;
+    $cmd .= " >> manual-run.log &";
+    exec($cmd);
+  }
 
 ?>
