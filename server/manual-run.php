@@ -12,7 +12,7 @@
   " --dob=" . escapeshellarg($dob) .
   " --gender=" . escapeshellarg($gender);
 
-  if($_GET["passthru"]){
+  if(isset($_GET["passthru"])){
     passthru($cmd);
   }else{
     echo $cmd;
