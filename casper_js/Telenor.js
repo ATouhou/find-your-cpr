@@ -85,7 +85,7 @@ casper.then(function(){
   });
 
   this.then(function(){
-    // this.test.comment('Clicking next #1');
+    this.test.comment('Clicking next #1');
     // console.log(this.getCurrentUrl());
     this.click('#next');
   });
@@ -95,7 +95,7 @@ casper.then(function(){
 // wait for next page (service.aspx)
 casper.then(function(){
 
-  // this.test.comment('Clicking next #2');
+  this.test.comment('Clicking next #2');
 
   // wait for next breadcrump to become active
   this.waitForSelector('.breadcrumb .active.id-1', function(){
@@ -106,7 +106,7 @@ casper.then(function(){
 
 // Basket page (basket.aspx)
 casper.then(function(){
-  // this.test.comment('Click checkout button');
+  this.test.comment('Click checkout button');
   this.waitForSelector('#EShop_Basket1_CheckOutImageButton', function(){
     // console.log(this.getCurrentUrl());
     this.click('#EShop_Basket1_CheckOutImageButton');
@@ -118,7 +118,7 @@ casper.then(function(){
 
 // Kontaktinformationsside
 casper.then(function(){
-  // this.test.comment('Accept use of cpr');
+  this.test.comment('Accept use of cpr');
 
   // click checkbox: accept cpr (LOLZ!)
   this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent', function(){
@@ -169,7 +169,7 @@ var checkCpr = function(index){
 
     // debug
     // console.log(cpr);
-    // console.log(person.lastNames[index]);
+    console.log(person.lastNames[index]);
 
     // We've had a page change!
     this.waitWhileSelector('#casperjs-was-here', function(){
