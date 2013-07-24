@@ -49,10 +49,10 @@ var randomNumber = Math.floor(Math.random() * userAgents.length);
 casper.userAgent(userAgents[randomNumber]);
 
 casper.then(function(){
-	console.log(person.firstName);
-	console.log(person.lastName);
-	console.log(person.dob);
-	//this.exit();
+  console.log(person.firstName);
+  console.log(person.lastName);
+  console.log(person.dob);
+  //this.exit();
 
   // generate list of cpr numbers
   //cprList = generateCpr.init(person.dob, person.gender);
@@ -72,80 +72,71 @@ casper.thenOpen('http://www.telenor.dk/privat/mobilabonnementer/mobilabonnemente
 // Choose: new number (nummer.aspx)
 casper.then(function(){
 
-	// Click: new number
-	this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
+  // Click: new number
+  this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
 
-	// wait for numbers and the choose one
-	this.waitForSelector('#subnumbers', function(){
-		// this.test.comment('Clicking on number');
+  // wait for numbers and the choose one
+  this.waitForSelector('#subnumbers', function(){
+    // this.test.comment('Clicking on number');
 
-		this.waitForSelector('#subnumbers input', function(){
-			this.click('#subnumbers input');
-		});
-	});
+    this.waitForSelector('#subnumbers input', function(){
+      this.click('#subnumbers input');
+    });
+  });
 
-	this.then(function(){
-		// this.test.comment('Clicking next #1');
-		// console.log(this.getCurrentUrl());
-		this.click('#next');
-	});
+  this.then(function(){
+    // this.test.comment('Clicking next #1');
+    // console.log(this.getCurrentUrl());
+    this.click('#next');
+  });
 
 });
 
 // wait for next page (service.aspx)
 casper.then(function(){
 
-	// this.test.comment('Clicking next #2');
+  // this.test.comment('Clicking next #2');
 
-	// wait for next breadcrump to become active
-	this.waitForSelector('.breadcrumb .active.id-1', function(){
-		// console.log(this.getCurrentUrl());
-		this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
-	}, undefined, 20000);
+  // wait for next breadcrump to become active
+  this.waitForSelector('.breadcrumb .active.id-1', function(){
+    // console.log(this.getCurrentUrl());
+    this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
+  }, undefined, 20000);
 });
 
 // Basket page (basket.aspx)
 casper.then(function(){
-	// this.test.comment('Click checkout button');
-	this.waitForSelector('#EShop_Basket1_CheckOutImageButton', function(){
-		// console.log(this.getCurrentUrl());
-		this.click('#EShop_Basket1_CheckOutImageButton');
-	}, function(){
-		// console.log(this.getCurrentUrl());
-		// this.test.comment('Failed checkout button');
-
-		// screenshot
-		this.capture('basket.png', {
-			top: 200,
-			left: 300,
-			width: 1200,
-			height: 1000
-		});
-
-	}, 30000);
+  // this.test.comment('Click checkout button');
+  this.waitForSelector('#EShop_Basket1_CheckOutImageButton', function(){
+    // console.log(this.getCurrentUrl());
+    this.click('#EShop_Basket1_CheckOutImageButton');
+  }, function(){
+    // console.log(this.getCurrentUrl());
+    this.test.comment('Failed checkout button');
+  }, 30000);
 });
 
 // Kontaktinformationsside
 casper.then(function(){
-	// this.test.comment('Accept use of cpr');
+  // this.test.comment('Accept use of cpr');
 
-	// click checkbox: accept cpr (LOLZ!)
-	this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent', function(){
-		this.click('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
-	});
-	checkCpr(0);
+  // click checkbox: accept cpr (LOLZ!)
+  this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent', function(){
+    this.click('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
+  });
+  checkCpr(0);
 });
 
 
 var checkCpr = function(index){
-	var cpr = person.dob + '-' + cprList[index];
-	var phone = Math.floor(Math.random() * 69000000) + 30000005;
-	var email = Math.random().toString(36).substring(5) + '@gmail.com';
+  var cpr = person.dob + '-' + cprList[index];
+  var phone = Math.floor(Math.random() * 69000000) + 30000005;
+  var email = Math.random().toString(36).substring(5) + '@gmail.com';
 
-	casper.then(function(){
+  casper.then(function(){
 
     // wait for CPR field
-		this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbCpr', function(){
+    this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbCpr', function(){
 
       // wait for email field (last field in form)
       this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbEmail', function(){
@@ -159,46 +150,53 @@ var checkCpr = function(index){
           '_ContactInformation_ContactInformation1$ctl00$ctl00$tbEmail': email
         }, false);
       });
-		});
-	});
+    });
+  });
 
-	// submit
-	casper.then(function(){
-		this.click('.next');
-	});
+  // submit
+  casper.then(function(){
 
-	// check response
-	casper.then(function(){
+    // add dummy element, so we know when the page has changed!
+    casper.evaluate(function() {
+      $('body').append('<p id="casperjs-was-here">Hello</p>');
+    });
 
-		// debug
-		// console.log(cpr);
-		// console.log(person.lastNames[index]);
+    this.click('.next');
+  });
 
-		// success
-		if(this.getCurrentUrl().indexOf("godkend.aspx") !== -1){
-			// console.log(colorizer.colorize(cpr, "GREEN_BAR"));
-      console.log("correct: " + cpr);
+  // check response
+  casper.then(function(){
 
-		// Failure
-		}else{
-			var message = this.fetchText('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary').replace(/(\r\n|\n|\r)/gm,"").trim();
-      console.log("wrong: " + cpr);
-			// console.log(colorizer.colorize(cpr, "ERROR") + " - " + message);
-			//this.captureSelector('incorrect_' + index + '.png', '.name-address-wrapper');
-    this.capture('incorrect_' + index + '.png', {
+    // debug
+    // console.log(cpr);
+    // console.log(person.lastNames[index]);
+
+    // We've had a page change!
+    this.waitWhileSelector('#casperjs-was-here', function(){
+
+      // success
+      if(this.getCurrentUrl().indexOf("godkend.aspx") !== -1){
+        // console.log(colorizer.colorize(cpr, "GREEN_BAR"));
+        console.log("correct: " + cpr);
+
+      // Failure
+      }else{
+        var message = this.fetchText('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary').replace(/(\r\n|\n|\r)/gm,"").trim();
+        console.log("wrong: " + cpr);
+        this.capture('incorrect_' + index + '.png', {
           top: 230,
-                left: 100,
-                      width: 600,
-                            height: 600
-                                });
+          left: 100,
+          width: 600,
+          height: 600
+        });
 
-
-			index++;
-			if(cprList[index] !== undefined){
-				checkCpr(index);
-			}
-		}
-	});
+        index++;
+        if(cprList[index] !== undefined){
+          checkCpr(index);
+        }
+      } // end of else
+    }); // end of waitWhileSelector
+  });
 };
 
 // print current url
