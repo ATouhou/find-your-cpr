@@ -3,27 +3,25 @@
   <head lang="en">
     <meta charset="utf-8">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/3.2.2/stylesheets/foundation.min.css">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
-
     <link href="/css/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
     <title>Find dit CPR-nummer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <meta name="description" content="Remove unwanted events when syncing with Facebook events. This service will filter your events, so only the events you are attending, or maybe attending will show up.">
 
-    <meta property="og:title" content="Freedom - Remove unanswered Facebook events from your calendar"/>
-    <meta property="og:url" content="http://freedom.konscript.com"/>
-    <meta property="og:image" content="http://freedom.konscript.com/img/freedom-logo-blue.png"/>
-    <meta property="og:site_name" content="Freedom"/>
+    <meta property="og:title" content="Find dit CPR-nummer"/>
+    <meta property="og:url" content="http://findcpr.konscript.net"/>
+    <meta property="og:image" content="http://findcpr.konscript.net/img/freedom-logo-blue.png"/>
+    <meta property="og:site_name" content="Find dit CPR-nummer... her!"/>
     <meta property="og:type" content="website"/>
-    <meta property="fb:app_id" content="408564152572106"/>
-    <meta property="og:description" content="Remove unwanted events when syncing with Facebook events. This service will filter your events, so only the events you are attending, or maybe attending will show up."/>
+    <meta property="fb:app_id" content="175492305964600"/>
+    <meta property="og:description" content="Dit CPR nummer kan findes på få minutter. Prøv selv at se, hvor let tilgængeligt det er nu."/>
   </head>
   <body ng-app="projectIdentity">
 
     <h1 id="headline">Find dit CPR-nummer</h1>
 
-    <div class="row">
+    <div class="row hidden">
       <div class="small-2 large-2 columns"></div>
       <div class="small-6 large-8 columns" ng-controller="page" id="page-container">
         <facebook data-app-id='175492305964600' ng-show="facebook.sdkLoaded">
@@ -63,7 +61,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
     <script src="http://code.angularjs.org/1.0.7/angular-resource.min.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/CprFactory.js"></script>
     <script src="js/facebookDirective.js"></script>
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
   </body>
 </html>

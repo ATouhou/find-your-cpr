@@ -7,19 +7,27 @@ projectIdentity.filter('translate', function() {
   };
 
   return function(input) {
-    if(input){
-      return translations[input];
-    }
+    if(input) return translations[input];
   };
 });
 
 
+projectIdentity.directive( 'hidden', function() {
+  return {
+    restrict: 'C',
+    link: function( scope, element, attrs ) {
+      element.removeClass( 'hidden' );
+    }
+  };
+});
 
 // projectIdentity.factory('FetchCpr', function ($http) {
 //   return $http({method: 'GET', url: 'server/fetchCpr.php'});
 // });
 
 projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
+  var errorCount = 0;
+
   $scope.facebook = {};
   $scope.$on("facebookResponse", function(e, response){
 
@@ -33,13 +41,21 @@ projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
           $scope.fetchedData = data;
           console.log(data.status);
 
+          // keep polling
           if(data.status === "pending" || data.status === "initiated"){
             $timeout(poll, 2000);
           }
 
         // error (not logged in, or not verified)
         }).error(function(data, status, headers, config) {
-          $scope.errorMsg = data.msg;
+
+          // allow a max of 2 errors
+          errorCount++;
+          if(errorCount < 3){
+            $timeout(poll, 3000);
+          }else{
+            $scope.errorMsg = data.msg;
+          }
         });
       })();
 

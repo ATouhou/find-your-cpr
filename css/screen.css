@@ -23,3 +23,7 @@ h1#headline {
 table#user-info {
   margin: 0 auto;
 }
+
+.hidden {
+  display: none;
+}
