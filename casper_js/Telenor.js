@@ -174,14 +174,21 @@ var checkCpr = function(index){
     // We've had a page change!
     this.waitWhileSelector('#casperjs-was-here', function(){
 
-      // success
-      if(this.getCurrentUrl().indexOf("godkend.aspx") !== -1){
+      var message = "";
+      if(this.exists('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary')){
+        message = this.fetchText('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary').replace(/(\r\n|\n|\r)/gm,"").trim();
+      }
+
+      // success if:
+      // 1) we are redirect to god
+      // OR
+      // 2) we receive a special message which only correct CPR numbers receive :D
+      if(this.getCurrentUrl().indexOf("godkend.aspx") !== -1 || message.indexOf("ikke ske automatisk, men ring til Telenor") !== -1){
         // console.log(colorizer.colorize(cpr, "GREEN_BAR"));
         console.log("correct: " + cpr);
 
       // Failure
       }else{
-        var message = this.fetchText('#_ContactInformation_ContactInformation1_ctl00_ctl00_summary').replace(/(\r\n|\n|\r)/gm,"").trim();
         console.log("wrong: " + cpr);
         this.capture('incorrect_' + index + '.png', {
           top: 230,
@@ -195,7 +202,7 @@ var checkCpr = function(index){
           checkCpr(index);
         }
       } // end of else
-    }); // end of waitWhileSelector
+    }, undefined, 20000); // end of waitWhileSelector
   });
 };
 
