@@ -69,22 +69,24 @@
 
   // start finding CPR
   }else{
-    //file_put_contents($log_file_path, "");
+    // create file
+    file_put_contents($log_file_path, "");
 
+    // get middle name
 		$middle_name = isset($user["middle_name"]) ? " ". $user["middle_name"] : "";
 
-    // build cmd
+    // build command
     $cmd = "cd ../casper_js && LANG=da_DK.utf-8; casperjs Telenor.js " .
     " --firstName=" . escapeshellarg(urlencode($user["first_name"] . $middle_name)) .
     " --lastName=" . escapeshellarg(urlencode($user["last_name"])) .
     " --dob=" . escapeshellarg($dob) .
-    " --gender=" . escapeshellarg($user["gender"]) . 
+    " --gender=" . escapeshellarg($user["gender"]) .
     " >> " . $log_file_name . " &";
 
-    //echo json_encode(array("cmd" => $cmd, "status" => "initiated"));
+    // Output to screen
     echo json_encode(array("status" => "initiated"));
-		//echo $cmd;
 
+    // start background process
     exec($cmd);
 
   }

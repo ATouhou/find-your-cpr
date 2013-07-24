@@ -12,8 +12,11 @@
   " --dob=" . escapeshellarg($dob) .
   " --gender=" . escapeshellarg($gender);
 
+  // output to screen
   if(isset($_GET["passthru"])){
     passthru($cmd);
+
+  // run as background job and output to file
   }else{
     echo $cmd;
     $cmd .= " >> manual-run.log &";
