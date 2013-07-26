@@ -158,16 +158,16 @@ var checkCpr = function(index){
         }, false);
       });
     });
-  });
-
-  // submit
-  casper.then(function(){
-
+    
     // add dummy element, so we know when the page has changed!
     casper.evaluate(function() {
       $('body').append('<p id="casperjs-was-here">Hello</p>');
     });
+    
+  });
 
+  // submit
+  casper.then(function(){
     this.click('.next');
   });
 
