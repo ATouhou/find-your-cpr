@@ -48,6 +48,9 @@ casper.start();
 var randomNumber = Math.floor(Math.random() * userAgents.length);
 casper.userAgent(userAgents[randomNumber]);
 
+// Set viewport size
+casper.viewport(1024, 768);
+
 casper.then(function(){
   console.log(person.firstName);
   console.log(person.lastName);
@@ -101,13 +104,9 @@ casper.then(function(){
     // console.log(this.getCurrentUrl());
     this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
   }, function(){
-      // apture screenshot
-      this.capture('failed_click_next_2.png', {
-        top: 230,
-        left: 100,
-        width: 600,
-        height: 600
-      });
+      // capture screenshot
+      this.test.comment('Failed clicking next #2');
+      this.captureSelector('failed_click_next_2.png', '#content');
   }, 30000);
 });
 
@@ -120,6 +119,7 @@ casper.then(function(){
   }, function(){
     // console.log(this.getCurrentUrl());    
     this.test.comment('Failed checkout button');
+    this.captureSelector('failed_click_checkout_button.png', '#content');
   }, 30000);
 });
 
@@ -197,21 +197,17 @@ var checkCpr = function(index){
       // Failure
       }else{
         console.log("wrong: " + cpr);
-        /*
-        this.capture('incorrect_' + index + '.png', {
-          top: 230,
-          left: 100,
-          width: 600,
-          height: 600
-        });
-        */
+        // this.captureSelector('incorrect_' + index + '.png', '#content');
 
         index++;
         if(cprList[index] !== undefined){
           checkCpr(index);
         }
       } // end of else
-    }, undefined, 20000); // end of waitWhileSelector
+    }, function(){
+      this.test.comment('Timeout checking CPR #' + index);
+      this.captureSelector('timeout_check_cpr_' + index + '.png', '#content');
+    }, 30000); // end of waitWhileSelector
   });
 };
 
