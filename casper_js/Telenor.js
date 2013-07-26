@@ -97,10 +97,18 @@ casper.then(function(){
   this.test.comment('Clicking next #2');
 
   // wait for next breadcrump to become active
-  this.waitForSelector('.breadcrumb .active.id-1', function(){
+  this.waitForSelector('.breadcrumb .active.id-1', function(){    
     // console.log(this.getCurrentUrl());
     this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
-  }, undefined, 20000);
+  }, function(){
+      // apture screenshot
+      this.capture('failed_click_next_2.png', {
+        top: 230,
+        left: 100,
+        width: 600,
+        height: 600
+      });
+  }, 30000);
 });
 
 // Basket page (basket.aspx)
@@ -110,7 +118,7 @@ casper.then(function(){
     // console.log(this.getCurrentUrl());
     this.click('#EShop_Basket1_CheckOutImageButton');
   }, function(){
-    // console.log(this.getCurrentUrl());
+    // console.log(this.getCurrentUrl());    
     this.test.comment('Failed checkout button');
   }, 30000);
 });
