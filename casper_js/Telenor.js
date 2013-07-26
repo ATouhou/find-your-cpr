@@ -48,9 +48,6 @@ casper.start();
 var randomNumber = Math.floor(Math.random() * userAgents.length);
 casper.userAgent(userAgents[randomNumber]);
 
-// Set viewport size
-casper.viewport(1024, 768);
-
 casper.then(function(){
   console.log(person.firstName);
   console.log(person.lastName);
@@ -62,6 +59,9 @@ casper.then(function(){
 
   // generate full names with different combinations
   person.lastNames = generateLastNames.init(person.lastName);
+  
+  // Set viewport size
+  casper.viewport(1024, 768);
 });
 
 // Open Page: Lillenor abonnement oversigt
