@@ -40,9 +40,17 @@ var cprList = [];
 
 /**************************************************/
 
-
 // begin
 casper.start();
+
+var getRandomString = function(length){
+  var randomString = Math.random().toString(36).slice(3, length+3);
+  if(randomString === ""){
+    return getRandomString(length);
+  }else{
+    return randomString;
+  }
+}
 
 // set random UserAgent
 var randomNumber = Math.floor(Math.random() * userAgents.length);
@@ -138,7 +146,7 @@ casper.then(function(){
 var checkCpr = function(index){
   var cpr = person.dob + '-' + cprList[index];
   var phone = Math.floor(Math.random() * 69000000) + 30000005;
-  var email = Math.random().toString(36).substring(5) + '@gmail.com';
+  var email = getRandomString(8) + '@gmail.com';
 
   casper.then(function(){
 
