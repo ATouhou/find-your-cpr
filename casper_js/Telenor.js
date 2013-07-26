@@ -82,15 +82,17 @@ casper.thenOpen('http://www.telenor.dk/privat/mobilabonnementer/mobilabonnemente
 // Choose: new number (nummer.aspx)
 casper.then(function(){
 
-  // Click: new number
-  this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
-
-  // wait for numbers and the choose one
-  this.waitForSelector('#subnumbers', function(){
-    // this.test.comment('Clicking on number');
-
-    this.waitForSelector('#subnumbers input', function(){
-      this.click('#subnumbers input');
+  this.then(function(){
+    // Click: new number
+    this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
+  
+    // wait for numbers and the choose one
+    this.waitForSelector('#subnumbers', function(){
+      // this.test.comment('Clicking on number');
+  
+      this.waitForSelector('#subnumbers input', function(){
+        this.click('#subnumbers input');
+      });
     });
   });
 
