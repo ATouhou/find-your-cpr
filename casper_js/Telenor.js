@@ -7,13 +7,29 @@ var casper = require('casper').create({
   // logLevel: "debug"
 });
 
+// Helper functions
+var zeroPad = function(num, places) {
+  var zero = places - num.toString().length + 1;
+  return Array(+(zero > 0 && zero)).join("0") + num;
+};
+
+var getRandomString = function(length){
+  var randomString = Math.random().toString(36).slice(3, length+3);
+  if(randomString === ""){
+    return getRandomString(length);
+  }else{
+    return randomString;
+  }
+};
+
+
 // command line options/arguments
 var cliOptions = casper.cli.options;
 
 var person = {
     firstName: decodeURI(cliOptions.firstName).replace(/\+/g, " "),
     lastName: decodeURI(cliOptions.lastName).replace(/\+/g, " "),
-    dob: cliOptions.dob,
+    dob: zeroPad(cliOptions.dob, 6),
     gender: cliOptions.gender,
     lastNames: []
 };
@@ -43,15 +59,6 @@ var cprList = [];
 // begin
 casper.start();
 
-var getRandomString = function(length){
-  var randomString = Math.random().toString(36).slice(3, length+3);
-  if(randomString === ""){
-    return getRandomString(length);
-  }else{
-    return randomString;
-  }
-}
-
 // set random UserAgent
 var randomNumber = Math.floor(Math.random() * userAgents.length);
 casper.userAgent(userAgents[randomNumber]);
@@ -60,14 +67,14 @@ casper.then(function(){
   console.log(person.firstName);
   console.log(person.lastName);
   console.log(person.dob);
-  //this.exit();
+  this.exit();
 
   // generate list of cpr numbers
   cprList = generateCpr.init(person.dob, person.gender);
 
   // generate full names with different combinations
   person.lastNames = generateLastNames.init(person.lastName);
-  
+
   // Set viewport size
   casper.viewport(1024, 768);
 });
@@ -85,11 +92,11 @@ casper.then(function(){
   this.then(function(){
     // Click: new number
     this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
-  
+
     // wait for numbers and the choose one
     this.waitForSelector('#subnumbers', function(){
       // this.test.comment('Clicking on number');
-  
+
       this.waitForSelector('#subnumbers input', function(){
         this.click('#subnumbers input');
       });
@@ -110,7 +117,7 @@ casper.then(function(){
   this.test.comment('Clicking next #2');
 
   // wait for next breadcrump to become active
-  this.waitForSelector('.breadcrumb .active.id-1', function(){    
+  this.waitForSelector('.breadcrumb .active.id-1', function(){
     // console.log(this.getCurrentUrl());
     this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
   }, function(){
@@ -127,7 +134,7 @@ casper.then(function(){
     // console.log(this.getCurrentUrl());
     this.click('#EShop_Basket1_CheckOutImageButton');
   }, function(){
-    // console.log(this.getCurrentUrl());    
+    // console.log(this.getCurrentUrl());
     this.test.comment('Failed checkout button');
     this.captureSelector('failed_click_checkout_button.png', '#content');
   }, 30000);
@@ -168,12 +175,12 @@ var checkCpr = function(index){
         }, false);
       });
     });
-    
+
     // add dummy element, so we know when the page has changed!
     casper.evaluate(function() {
       $('body').append('<p id="casperjs-was-here">Hello</p>');
     });
-    
+
   });
 
   // submit
