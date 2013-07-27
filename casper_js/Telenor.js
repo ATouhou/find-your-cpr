@@ -97,11 +97,13 @@ casper.then(function(){
 
     // wait for numbers and the choose one
     this.waitForSelector('#subnumbers', function(){
-      // this.test.comment('Clicking on number');
+      this.test.comment('Clicking on number');
 
       this.waitForSelector('#subnumbers input', function(){
         this.click('#subnumbers input');
       });
+    }, function(){
+      this.captureSelector('timeout_choose_number.png', '#content');
     });
   });
 
