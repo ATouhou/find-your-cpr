@@ -67,7 +67,6 @@ casper.then(function(){
   console.log(person.firstName);
   console.log(person.lastName);
   console.log(person.dob);
-  this.exit();
 
   // generate list of cpr numbers
   cprList = generateCpr.init(person.dob, person.gender);
