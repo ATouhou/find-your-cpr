@@ -4,9 +4,9 @@ var casper = require('casper').create({
     loadPlugins: false         // do not load NPAPI plugins (Flash, Silverlight, ...)
   },
   verbose: false,
-  logLevel: "debug"
+  // logLevel: "debug",
+  waitTimeout: 10000
 });
-casper.options.waitTimeout = 10000;
 
 // Helper functions
 var zeroPad = function(num, places) {
@@ -16,7 +16,7 @@ var zeroPad = function(num, places) {
 
 var getRandomString = function(length){
   var randomString = Math.random().toString(36).slice(3, length+3);
-  if(randomString === ""){
+  if(randomString === ""  ){
     return getRandomString(length);
   }else{
     return randomString;
@@ -83,39 +83,40 @@ casper.then(function(){
   casper.viewport(1024, 768);
 });
 
-var clickWhenReady = function(selector, succesCallback, index){
+// helper method for clicking on a DOM element when it is ready
+casper.clickWhenReady = function(selector, index){
   var successFunction = function(){
-    if(succesCallback) succesCallback();
     this.click(selector);
   };
 
   var errorFunction = function(){
     index = index || 0;
     console.log("Error at index: " + index);
-    this.captureSelector('timeout_' + person.dob + '_' + index + '.png', '#content');
+    var screenshotSelector = this.exists("#content") ? "#content" : "body";
+    this.captureSelector('timeout_' + person.dob + '_' + index + '.png', screenshotSelector);
     this.exit();
   };
 
-  casper.waitForSelector(selector, successFunction, errorFunction);
+  this.waitForSelector(selector, successFunction, errorFunction);
 };
 
 // Open Page: Lillenor abonnement oversigt
 casper.thenOpen('http://www.telenor.dk/privat/mobilabonnementer/mobilabonnementer/lillenor/index.aspx?icid=megadropdown_mobilabonnementer_lillenor').then(function(){
   console.log('Open start page');
-  clickWhenReady('#purchaseBtn');
+  this.clickWhenReady('#purchaseBtn');
 });
 
 casper.then(function(){
   console.log('Click: new number');
-  clickWhenReady('#EShop_ChooseNumberXUC1_btnMainNewNumber');
+  this.clickWhenReady('#EShop_ChooseNumberXUC1_btnMainNewNumber');
 });
 // wait for numbers and then choose one
 casper.then(function(){
-  clickWhenReady('#subnumbers input');
+  this.clickWhenReady('#subnumbers input');
 });
 casper.then(function(){
   console.log('Clicking next #1');
-  clickWhenReady('#next');
+  this.clickWhenReady('#next');
 });
 
 // wait for next page (service.aspx)
@@ -134,13 +135,13 @@ casper.then(function(){
 // Basket page (basket.aspx)
 casper.then(function(){
   console.log('Click checkout button');
-  clickWhenReady('#EShop_Basket1_CheckOutImageButton');
+  this.clickWhenReady('#EShop_Basket1_CheckOutImageButton');
 });
 
 // click checkbox: accept cpr (LOLZ!)
 casper.then(function(){
   console.log('Accept use of cpr');
-  clickWhenReady('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
+  this.clickWhenReady('#_ContactInformation_ContactInformation1_ctl00_ctl00_cbConsent');
 });
 
 casper.then(function(){
@@ -183,7 +184,7 @@ var checkCpr = function(index){
 
   // submit
   casper.then(function(){
-    clickWhenReady('.next', undefined, index);
+    this.clickWhenReady('.next', index);
   });
 
   // check response
@@ -220,7 +221,7 @@ var checkCpr = function(index){
     }, function(){
       console.log('Timeout checking CPR #' + index);
       this.captureSelector('timeout_check_cpr_' + index + '.png', '#content');
-    }, 30000); // end of waitWhileSelector
+    }, 40000); // end of waitWhileSelector
   });
 };
 

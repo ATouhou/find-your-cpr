@@ -42,7 +42,7 @@ projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
           console.log(data.status);
 
           // keep polling
-          if(data.status === "pending" || data.status === "initiated"){
+          if(data.status === "pending" || data.status === "initiated" || data.status === "restarting"){
             $timeout(poll, 2000);
           }
 
