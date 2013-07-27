@@ -11,7 +11,6 @@ projectIdentity.filter('translate', function() {
   };
 });
 
-
 projectIdentity.directive( 'hidden', function() {
   return {
     restrict: 'C',
@@ -21,12 +20,35 @@ projectIdentity.directive( 'hidden', function() {
   };
 });
 
-// projectIdentity.factory('FetchCpr', function ($http) {
-//   return $http({method: 'GET', url: 'server/fetchCpr.php'});
-// });
 
-projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
+projectIdentity.controller('page', function ($scope, $http, $timeout) {
+
   var errorCount = 0;
+
+  $scope.pollBackend = function(){
+    var middle_name = $scope.facebook.user.middle_name || "";
+    $scope.fetchedData = $scope.fetchedData || {status: "pending"};
+
+    $http({method: 'GET', url: 'server/fetchCpr.php?middle_name=' + middle_name}).success(function(data, status, headers, config) {
+      $scope.fetchedData = data;
+
+      // keep polling
+      if(data.status === "pending" || data.status === "initiated" || data.status === "restarting"){
+        $timeout($scope.pollBackend, 1000);
+      }
+
+    // error (not logged in, or not verified)
+    }).error(function(data, status, headers, config) {
+
+      // allow max 2 errors
+      errorCount++;
+      if(errorCount < 3){
+        $timeout($scope.pollBackend, 3000);
+      }else{
+        $scope.errorMsg = data.msg;
+      }
+    });
+  };  // end of poll backend
 
   $scope.facebook = {};
   $scope.$on("facebookResponse", function(e, response){
@@ -34,37 +56,12 @@ projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
     // connected to facebook
     if(response.status == "connected"){
 
-      // long poll backend
-      (function poll() {
-        $http({method: 'GET', url: 'server/fetchCpr.php'}).success(function(data, status, headers, config) {
-
-          $scope.fetchedData = data;
-          console.log(data.status);
-
-          // keep polling
-          if(data.status === "pending" || data.status === "initiated" || data.status === "restarting"){
-            $timeout(poll, 1000);
-          }
-
-        // error (not logged in, or not verified)
-        }).error(function(data, status, headers, config) {
-
-          // allow a max of 2 errors
-          errorCount++;
-          if(errorCount < 3){
-            $timeout(poll, 3000);
-          }else{
-            $scope.errorMsg = data.msg;
-          }
-        });
-      })();
-
       // fetch user info
-      FB.api('/me?fields=name,birthday,gender,verified,picture.height(200)', function(user){
+      FB.api('/me?fields=name,first_name,middle_name,last_name,birthday,gender,verified,picture.height(200)', function(user){
         console.log(user);
         $scope.facebook.user = user;
         $scope.$apply();
       });
-    }
-  });
-});
+    } // end of status == "connected"
+  }); // end of facebookResponse listener
+}); // end of "page"-controller

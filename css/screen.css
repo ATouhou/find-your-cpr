@@ -22,6 +22,16 @@ h1#headline {
 
 table#user-info {
   margin: 0 auto;
+  width: 400px;
+}
+
+table#user-info tr td {
+  height: 25px;
+  line-height: 25px;
+}
+
+table#user-info .attributeNames {
+  width: 150px;
 }
 
 .hidden {

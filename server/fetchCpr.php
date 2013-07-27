@@ -84,12 +84,13 @@
     // execute command
     $cmd = get_shell_command($user, $log_file_name);
     echo json_encode(array("status" => "initiated"));
+    // echo $cmd;
     exec($cmd);
   }
 
 function get_shell_command($user, $log_file_name, $start_from = 0){
   // get middle name
-  $middle_name = isset($user["middle_name"]) ? " ". $user["middle_name"] : "";
+  $middle_name = isset($_GET["middle_name"]) && $_GET["middle_name"] !== "" ? " ". trim($_GET["middle_name"]) : "";
 
   // get birthday
   $user_birthday = explode('/', $user["birthday"]);

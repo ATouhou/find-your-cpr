@@ -35,7 +35,17 @@
         <h4 ng-show="errorMsg">Fejl: {{errorMsg}}</h4>
 
         <table id="user-info" ng-hide="errorMsg" ng-show="facebook.user.name" >
-          <tr><td>Navn:</td><td>{{facebook.user.name}}</td></tr>
+          <tr>
+            <td class="attributeNames">Fornavn:</td>
+            <td>{{facebook.user.first_name}}</td></tr>
+          <tr>
+            <td class="attributeNames">Mellemnavn:</td>
+            <td><span click-to-edit="facebook.user.middle_name">{{facebook.user.middle_name}}</span></td>
+          </tr>
+          <tr>
+            <td class="attributeNames">Efternavn:</td>
+            <td>{{facebook.user.last_name}}</td>
+          </tr>
           <tr><td>Fødselsdag:</td><td>{{facebook.user.birthday}}</td></tr>
           <tr><td>Køn:</td><td>{{facebook.user.gender | translate}}</td></tr>
 
@@ -45,13 +55,14 @@
             <td ng-switch-when="failed">Der skete en fejl. Æv! :(</td>
             <td ng-switch-when="not-found">Dit CPR-nummer blev ikke fundet. Er navn og fødselsdag korrekt?</td>
             <td ng-switch-when="pending">
-
               <progress max="180" value="{{fetchedData.numberOfAttempts}}">
-                <strong>Progress: {{fetchedData.numberOfAttempts/180}}% done.</strong>
+                <strong>Søger: {{fetchedData.numberOfAttempts/180}}%</strong>
               </progress>
               <div class="loading-container"><img src="img/loading.gif" width="20"/></div>
             </td>
-            <td ng-switch-default><div class="loading-container"><img src="img/loading.gif" width="20"/></div></td>
+            <td ng-switch-default>
+              <a href="#" class="button success radius" ng-click="pollBackend()" ng-hide="pollingInitiated">Find mit CPR-nummer</a>
+            </td>
           </tr>
         </table>
       </div>  <!-- end of #page-container  -->
@@ -62,6 +73,7 @@
     <script src="http://code.angularjs.org/1.0.7/angular-resource.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/facebookDirective.js"></script>
+    <script src="js/editableDirective.js"></script>
 
     <link href='http://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
   </body>

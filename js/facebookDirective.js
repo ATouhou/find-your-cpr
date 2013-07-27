@@ -19,7 +19,7 @@ projectIdentity.directive('facebook', function($http) {
           $scope.$emit("facebookResponse", response);
           $scope.facebook.status = response.status;
           $scope.$apply();
-        }, { scope: 'read_stream, user_birthday' });
+        }, { scope: 'user_birthday' });
       };
     }, // controller end
 
