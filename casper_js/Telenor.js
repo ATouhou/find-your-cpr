@@ -6,6 +6,7 @@ var casper = require('casper').create({
   verbose: false
   // logLevel: "debug"
 });
+casper.options.waitTimeout = 10000;
 
 // Helper functions
 var zeroPad = function(num, places) {
