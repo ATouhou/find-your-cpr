@@ -96,7 +96,7 @@ function get_shell_command($user, $log_file_name, $start_from = 0){
   $dob = $user_birthday[1] . $user_birthday[0] . substr($user_birthday[2], -2);
 
   // build command
-  $cmd = "cd ../casper_js && LANG=da_DK.utf-8; casperjs Telenor.js " .
+  $cmd = "cd ../casper_js && LANG=da_DK.utf-8; casperjs OK.js " .
   " --firstName=" . escapeshellarg(urlencode($user["first_name"] . $middle_name)) .
   " --lastName=" . escapeshellarg(urlencode($user["last_name"])) .
   " --dob=" . escapeshellarg($dob) .
