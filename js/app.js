@@ -43,7 +43,7 @@ projectIdentity.controller('page', function ($scope, $q, $http, $timeout) {
 
           // keep polling
           if(data.status === "pending" || data.status === "initiated" || data.status === "restarting"){
-            $timeout(poll, 2000);
+            $timeout(poll, 1000);
           }
 
         // error (not logged in, or not verified)
