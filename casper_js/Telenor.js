@@ -84,6 +84,8 @@ casper.thenOpen('http://www.telenor.dk/privat/mobilabonnementer/mobilabonnemente
   this.waitForSelector('#purchaseBtn', function(){
     this.click('#purchaseBtn');
   });
+}, function(){
+  this.captureSelector('timeout_initial_open.png', '#content');
 });
 
 // Choose: new number (nummer.aspx)
@@ -122,8 +124,8 @@ casper.then(function(){
     this.click('#next[data-rel="FlowNavigator1_ImageButtonNext"]');
   }, function(){
       // capture screenshot
-      this.test.comment('Failed clicking next #2');
-      this.captureSelector('failed_click_next_2.png', '#content');
+      this.test.comment('Timeout clicking next #2');
+      this.captureSelector('timeout_click_next_2.png', '#content');
   }, 30000);
 });
 
@@ -135,8 +137,8 @@ casper.then(function(){
     this.click('#EShop_Basket1_CheckOutImageButton');
   }, function(){
     // console.log(this.getCurrentUrl());
-    this.test.comment('Failed checkout button');
-    this.captureSelector('failed_click_checkout_button.png', '#content');
+    this.test.comment('Timeout checkout button');
+    this.captureSelector('timeout_click_checkout_button.png', '#content');
   }, 30000);
 });
 
