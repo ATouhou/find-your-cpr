@@ -37,3 +37,7 @@ table#user-info .attributeNames {
 .hidden {
   display: none;
 }
+
+.loading-wrapper{
+  text-align: center;
+}

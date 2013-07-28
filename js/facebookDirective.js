@@ -1,7 +1,7 @@
 projectIdentity.directive('facebook', function($http) {
   return {
     restrict: 'E',
-    scope: true,
+    // scope: true,
 
     // Controller
     controller: function($scope, $attrs) {

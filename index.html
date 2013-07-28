@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="projectIdentity">
   <head lang="en">
     <meta charset="utf-8">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/3.2.2/stylesheets/foundation.min.css">
@@ -17,24 +17,27 @@
     <meta property="fb:app_id" content="175492305964600"/>
     <meta property="og:description" content="Dit CPR nummer kan findes på få minutter. Prøv selv at se, hvor let tilgængeligt det er nu."/>
   </head>
-  <body ng-app="projectIdentity">
+  <body ng-controller="page">
 
     <h1 id="headline">Find dit CPR-nummer</h1>
+    <div class="loading-wrapper" ng-hide="facebook.user.first_name || facebook.status=='unknown'">
+      <img src="img/loading.gif">
+    </div>
 
     <div class="row hidden">
       <div class="small-2 large-2 columns"></div>
-      <div class="small-6 large-8 columns" ng-controller="page" id="page-container">
+      <div class="small-6 large-8 columns" id="page-container">
+
         <facebook data-app-id='175492305964600' ng-show="facebook.sdkLoaded">
           <a href="#" ng-hide="facebook.status=='connected'" class="facebook-connect-button" ng-click="login()"><img src="img/facebook-connect-button.png"/></a>
           <div id="fb-root"></div>
         </facebook>
 
-        <img src="img/loading.gif" ng-hide="facebook.user.name || facebook.status!='connected'">
         <!-- <img ng-src="{{facebook.user.picture.data.url}}"> -->
 
         <h4 ng-show="errorMsg">Fejl: {{errorMsg}}</h4>
 
-        <table id="user-info" ng-hide="errorMsg" ng-show="facebook.user.name" >
+        <table id="user-info" ng-show="facebook.user.first_name">
           <tr>
             <td class="attributeNames">Fornavn:</td>
             <td>{{facebook.user.first_name}}</td></tr>
