@@ -34,6 +34,10 @@ table#user-info .attributeNames {
   width: 150px;
 }
 
+table#user-info progress {
+  width: 100%;
+}
+
 .hidden {
   display: none;
 }
