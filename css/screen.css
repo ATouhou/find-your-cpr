@@ -26,8 +26,8 @@ table#user-info {
 }
 
 table#user-info tr td {
-  height: 25px;
-  line-height: 25px;
+  height: 28px;
+  line-height: 28px;
 }
 
 table#user-info .attributeNames {
@@ -44,4 +44,12 @@ table#user-info progress {
 
 .loading-wrapper{
   text-align: center;
+}
+
+.click-to-edit input {
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 2.5px;
+  border: 1px solid #eee;
 }
