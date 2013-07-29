@@ -21,7 +21,7 @@ projectIdentity.directive("clickToEdit", function() {
   var editorTemplate = '<div class="click-to-edit">' +
     '<div ng-hide="view.editorEnabled">' +
       '{{value}} ' +
-      '<a ng-click="enableEditor()">Edit</a>' +
+      '<a href="#" ng-click="enableEditor()">Edit</a>' +
     '</div>' +
     '<div ng-show="view.editorEnabled">' +
       '<input ng-model="view.editableValue" ng-model-onblur ng-change="save()">' +
